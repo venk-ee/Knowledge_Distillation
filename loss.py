@@ -25,4 +25,4 @@ class LogitDistillationLoss(nn.Module):
         total_loss=(1-self.alpha)*standard_loss + self.alpha*scaled_distillation_loss
 
         return total_loss
-        
+
