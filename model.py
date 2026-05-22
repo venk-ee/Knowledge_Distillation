@@ -2,8 +2,13 @@ import timm
 import torch
 import torch.nn as nn
 
-def create_student_teacher(num_classes:int):
 
+def create_student(num_classes:int):
+    student_model = timm.create_model("vit_tiny_patch16_224", pretrained=True, num_classes=num_classes)
+    return student_model
+
+
+def create_student_teacher(num_classes:int):
     student_model = timm.create_model("vit_tiny_patch16_224", pretrained=True, num_classes=num_classes)
 
     teacher_model = timm.create_model("vit_large_patch16_224", pretrained=True, num_classes=num_classes)

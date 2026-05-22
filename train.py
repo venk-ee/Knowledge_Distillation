@@ -3,7 +3,7 @@ from dataset import get_oxford_pet_dataloder
 from loss import LogitDistillationLoss
 from torch.optim import AdamW
 import torch
-
+import torch.nn.functional as F
 
 def train_knowledge_distillation(epochs):
     device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -48,7 +48,7 @@ def train_knowledge_distillation(epochs):
             data,target=data.to(device),target.to(device)
 
             with torch.inference_mode():
-                student_outputs_logits=teacher_model(data)
+                student_outputs_logits=student_model(data)
             loss = F.cross_entropy(student_outputs_logits, target)
             val_loss.append(loss.item())
 

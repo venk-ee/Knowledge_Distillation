@@ -1,0 +1,9 @@
+INTRODUCTION
+
+Knowledge distillation (KD) is a model compression technique that transfers 
+learned representations from a large "teacher" model to a smaller "student" 
+model. This report investigates how much of a ViT-Large teacher's 
+representational power can be recovered in a ViT-Tiny student using diverse 
+distillation strategies.
+
+experiment 1 :baseline-Train
