@@ -2,6 +2,7 @@ from model import create_student_teacher
 from dataset import get_oxford_pet_dataloder
 from loss import LogitDistillationLoss
 from torch.optim import AdamW
+import torch
 
 
 def train_knowledge_distillation(epochs):
@@ -52,3 +53,8 @@ def train_knowledge_distillation(epochs):
             val_loss.append(loss.item())
 
         print(f'Epoch: {epoch} | Train Loss: {sum(train_loss)/len(train_loss):.4f} | Val Loss: {sum(val_loss)/len(val_loss):.4f}')
+
+
+if __name__ == "__main__":
+    print("Starting Knowledge Distillation Pipeline...")
+    train_knowledge_distillation(epochs=3)

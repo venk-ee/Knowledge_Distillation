@@ -7,15 +7,15 @@ import torchvision.transforms as T
 
 def get_oxford_pet_dataloder(batch_size: int = 32, num_workers: int = 2):
     train_transforms = T.Compose([
-        T.Resize(256, 256),
-        T.RandomCrop(224, 224),
+        T.Resize((256, 256)),
+        T.RandomCrop((224, 224)),
         T.RandomHorizontalFlip(),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
     val_transforms = T.Compose([
-        T.Resize(256, 256),
-        T.CenterCrop(224),
+        T.Resize((256, 256)),
+        T.CenterCrop((224, 224)),
         T.ToTensor(),
         T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
     ])
