@@ -106,9 +106,10 @@ def train_knowledge_distillation(epochs):
             torch.save(student_model.state_dict(), "distillation_best_top5.pth")
             print(f"  -> Saved best student model by Top-5 (Val Top-5: {val_top5.avg:.2f}%)")
 
-    # Save training history to JSON
-    with open("distillation_history.json", "w") as f:
-        json.dump(history, f, indent=4)
+        # Save training history to JSON incrementally
+        with open("distillation_history.json", "w") as f:
+            json.dump(history, f, indent=4)
+
     print("Saved training history to distillation_history.json")
 
 
