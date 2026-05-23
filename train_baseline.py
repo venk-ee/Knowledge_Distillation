@@ -23,6 +23,17 @@ def train_baseline(epochs=20, lr=1e-4):
     best_val_top1 = 0.0
     best_val_top5 = 0.0
 
+    import json
+    history = {
+        "epoch": [],
+        "train_loss": [],
+        "train_top1": [],
+        "train_top5": [],
+        "val_loss": [],
+        "val_top1": [],
+        "val_top5": []
+    }
+
     for epoch in range(epochs):
         # Training
         student_model.train()
@@ -65,6 +76,15 @@ def train_baseline(epochs=20, lr=1e-4):
                 val_top1.update(acc1, data.size(0))
                 val_top5.update(acc5, data.size(0))
 
+        # Record history
+        history["epoch"].append(epoch + 1)
+        history["train_loss"].append(train_loss.avg)
+        history["train_top1"].append(train_top1.avg)
+        history["train_top5"].append(train_top5.avg)
+        history["val_loss"].append(val_loss.avg)
+        history["val_top1"].append(val_top1.avg)
+        history["val_top5"].append(val_top5.avg)
+
         # Logging
         print(
             f"Epoch {epoch+1}/{epochs} | "
@@ -83,6 +103,11 @@ def train_baseline(epochs=20, lr=1e-4):
             best_val_top5 = val_top5.avg
             torch.save(student_model.state_dict(), "baseline_best_top5.pth")
             print(f"  -> Saved best model by Top-5 (Val Top-5: {val_top5.avg:.2f}%)")
+
+    # Save training history to JSON
+    with open("baseline_history.json", "w") as f:
+        json.dump(history, f, indent=4)
+    print("Saved training history to baseline_history.json")
 
     print(f"\nBaseline training complete. Best Val Top-1 Acc: {best_val_top1:.2f}% | Best Val Top-5 Acc: {best_val_top5:.2f}%")
 
