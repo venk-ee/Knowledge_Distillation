@@ -9,8 +9,8 @@ def load_history(filepath):
     return None
 
 def main():
-    baseline = load_history("./baseline/baseline_history.json")
-    distill = load_history("distillation_history.json")
+    baseline = load_history("/home/kenny/dev/Knowledge_Distillation/experiments/baseline/baseline_history.json")
+    distill = load_history("/home/kenny/dev/Knowledge_Distillation/experiments/ViTKD/distillation_history.json")
 
     if not baseline and not distill:
         print("Error: Neither 'baseline_history.json' nor 'distillation_history.json' found.")
@@ -22,13 +22,11 @@ def main():
 
     # 1. Loss Plot
     if baseline:
-        axes[0].plot(baseline["epoch"], baseline["train_loss"], label="Baseline Train Loss", linestyle="--", color="dodgerblue", marker='o')
         axes[0].plot(baseline["epoch"], baseline["val_loss"], label="Baseline Val Loss", color="dodgerblue", marker='o')
     if distill:
-        axes[0].plot(distill["epoch"], distill["train_loss"], label="KD Train Loss", linestyle="--", color="crimson", marker='o')
         axes[0].plot(distill["epoch"], distill["val_loss"], label="KD Val Loss", color="crimson", marker='o')
     
-    axes[0].set_title("Training & Validation Loss")
+    axes[0].set_title("Validation Loss")
     axes[0].set_xlabel("Epoch")
     axes[0].set_ylabel("Loss")
     axes[0].legend()

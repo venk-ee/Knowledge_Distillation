@@ -116,4 +116,4 @@ if __name__ == "__main__":
     print("=" * 60)
     print("Experiment 1 (Baseline): ViT-Tiny + Cross-Entropy (No Teacher)")
     print("=" * 60)
-    train_baseline(epochs=20, lr=1e-4)
+    train_baseline(epochs=100, lr=1e-4)

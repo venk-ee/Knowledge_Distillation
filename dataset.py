@@ -5,7 +5,7 @@ import torchvision.transforms as T
 # import albumentations as A
 # from albumentations.pytorch import ToTensorV2
 
-def get_oxford_pet_dataloder(batch_size: int = 32, num_workers: int = 2):
+def get_oxford_pet_dataloder(batch_size: int = 64, num_workers: int = 2):
     train_transforms = T.Compose([
         T.Resize((256, 256)),
         T.RandomCrop((224, 224)),
