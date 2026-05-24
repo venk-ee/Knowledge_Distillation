@@ -117,5 +117,5 @@ def train_knowledge_distillation(epochs):
 
 if __name__ == "__main__":
     print("Starting Knowledge Distillation Pipeline...")
-    train_knowledge_distillation(epochs=3)
+    train_knowledge_distillation(epochs=30)
 
