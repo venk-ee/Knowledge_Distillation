@@ -26,3 +26,27 @@ class LogitDistillationLoss(nn.Module):
 
         return total_loss
 
+
+class ViTKDLoss(nn.Module):
+    def __init__(self, student_dim: int = 192, teacher_dim: int = 1024, alpha: float = 0.5):
+        super().__init__()
+        self.alpha = alpha
+        
+        self.projector = nn.Linear(student_dim, teacher_dim)
+
+    def forward(self, student_logits, student_features, teacher_features, labels):
+        
+        task_loss = F.cross_entropy(student_logits, labels)
+
+        student_patches = student_features[:, 1:, :]
+        teacher_patches = teacher_features[:, 1:, :]
+
+
+        projected_student_patches = self.projector(student_patches)
+
+
+        distillation_loss = F.mse_loss(projected_student_patches, teacher_patches)
+
+        total_loss = (1 - self.alpha) * task_loss + self.alpha * distillation_loss
+        
+        return total_loss

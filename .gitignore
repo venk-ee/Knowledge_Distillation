@@ -11,3 +11,5 @@ env/
 data/**/*
 
 !**/placeholder.txt
+
+experiments/

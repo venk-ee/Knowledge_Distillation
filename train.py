@@ -1,6 +1,6 @@
 from model import create_student_teacher
 from dataset import get_oxford_pet_dataloder
-from loss import LogitDistillationLoss
+from loss import ViTKDLoss
 from torch.optim import AdamW
 import torch
 import torch.nn.functional as F
@@ -18,8 +18,8 @@ def train_knowledge_distillation(epochs):
     student_model.to(device)
     teacher_model.to(device)
 
-    criterion = LogitDistillationLoss(temperature=2)
-    optimizer = AdamW(student_model.parameters(), lr=1e-4)
+    criterion = ViTKDLoss().to(device)
+    optimizer = AdamW(list(student_model.parameters()) + list(criterion.parameters()), lr=1e-4)
 
     best_val_top1 = 0.0
     best_val_top5 = 0.0
@@ -45,12 +45,14 @@ def train_knowledge_distillation(epochs):
         for batch_idx, (data, target) in enumerate(train_loader):
             data, target = data.to(device), target.to(device)
 
-            with torch.inference_mode():
-                teacher_outputs_logits = teacher_model(data)
+            with torch.no_grad():
+                teacher_features = teacher_model.forward_features(data)
+                teacher_outputs_logits = teacher_model.forward_head(teacher_features)
             
-            student_outputs_logits = student_model(data)
+            student_features = student_model.forward_features(data)
+            student_outputs_logits = student_model.forward_head(student_features)
             
-            loss = criterion(student_outputs_logits, teacher_outputs_logits, target)
+            loss = criterion(student_outputs_logits, student_features, teacher_features, target)
             
             optimizer.zero_grad()
             loss.backward()

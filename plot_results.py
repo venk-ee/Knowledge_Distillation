@@ -9,7 +9,7 @@ def load_history(filepath):
     return None
 
 def main():
-    baseline = load_history("baseline_history.json")
+    baseline = load_history("./baseline/baseline_history.json")
     distill = load_history("distillation_history.json")
 
     if not baseline and not distill:
