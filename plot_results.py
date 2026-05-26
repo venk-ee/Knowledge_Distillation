@@ -4,54 +4,37 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-def load_history(filepath):
-    if os.path.exists(filepath):
-        with open(filepath, 'r') as f:
-            return json.load(f)
-    return None
-
 def main():
-    baseline = load_history("/home/kenny/pytorch/Knowledge_Distillation/experiments/baseline/baseline_history.json")
-    distill = load_history("/home/kenny/pytorch/Knowledge_Distillation/experiments/vitdk/distillation_history.json")
+    experiments = {
+        "Baseline": "experiments/baseline/baseline_history.json",
+        "ViTKD": "experiments/vitdk/distillation_history.json",
+        "CLS Token": "experiments/cls_token/distillation_history.json",
+        "Attention": "experiments/attention/distillation_history.json"
+    }
 
-    if not baseline and not distill:
-        print("Error: Neither 'baseline_history.json' nor 'distillation_history.json' found.")
-        print("Please train your models first to generate the logs.")
-        return
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
 
-    # Create figure
-    fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+    for name, path in experiments.items():
+        if not os.path.exists(path):
+            continue
+        
+        with open(path, "r") as f:
+            history = json.load(f)
 
-    # 1. Loss Plot
-    if baseline:
-        axes[0].plot(baseline["epoch"], baseline["val_loss"], label="Baseline Val Loss", color="dodgerblue", marker='o')
-    if distill:
-        axes[0].plot(distill["epoch"], distill["val_loss"], label="KD Val Loss", color="crimson", marker='o')
-    
+        axes[0].plot(history["epoch"], history["val_loss"], label=name)
+        axes[1].plot(history["epoch"], history["val_top1"], label=name)
+
     axes[0].set_title("Validation Loss")
-    axes[0].set_xlabel("Epoch")
-    axes[0].set_ylabel("Loss")
     axes[0].legend()
-    axes[0].grid(True, linestyle=":", alpha=0.6)
+    axes[0].grid(True)
 
-    # 2. Accuracy Plot
-    if baseline:
-        axes[1].plot(baseline["epoch"], baseline["val_top1"], label="Baseline Val Top-1", color="dodgerblue", marker='o')
-        axes[1].plot(baseline["epoch"], baseline["val_top5"], label="Baseline Val Top-5", linestyle=":", color="dodgerblue", marker='^')
-    if distill:
-        axes[1].plot(distill["epoch"], distill["val_top1"], label="KD Val Top-1", color="crimson", marker='o')
-        axes[1].plot(distill["epoch"], distill["val_top5"], label="KD Val Top-5", linestyle=":", color="crimson", marker='^')
-
-    axes[1].set_title("Validation Accuracy (Top-1 & Top-5)")
-    axes[1].set_xlabel("Epoch")
-    axes[1].set_ylabel("Accuracy (%)")
+    axes[1].set_title("Validation Accuracy")
     axes[1].legend()
-    axes[1].grid(True, linestyle=":", alpha=0.6)
+    axes[1].grid(True)
 
     plt.tight_layout()
-    output_filename = "distillation_results_comparison.png"
-    plt.savefig(output_filename, dpi=300)
-    print(f"Comparison plot successfully saved to '{output_filename}'!")
+    plt.savefig("distillation_results_comparison.png", dpi=150)
+    print("Plot saved successfully!")
 
 if __name__ == "__main__":
     main()
