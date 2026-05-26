@@ -99,3 +99,4 @@ class AttentionTransferLoss(nn.Module):
         total_loss = (1 - self.alpha) * task_loss + self.alpha * distillation_loss
         
         return total_loss
+

@@ -6,39 +6,55 @@ model. This report investigates how much of a ViT-Large teacher's
 representational power can be recovered in a ViT-Tiny student using diverse 
 distillation strategies.
 
-experiment 1 :baseline-Train
+EXPERIMENT SUMMARY
 
-kenny@kenny:~/dev/Knowledge_Distillation$ source ~/dev/my_torch_venv/bin/activate
-cd ~/dev/Knowledge_Distillation
-python3 train_baseline.py
-============================================================
-Experiment 1 (Baseline): ViT-Tiny + Cross-Entropy (No Teacher)
-============================================================
-Using device: cuda
-Epoch 1/20 | Train Loss: 1.8449 | Train Acc: 52.61% | Val Loss: 0.7931 | Val Acc: 79.04%
-  -> Saved best model (Val Acc: 79.04%)
-Epoch 2/20 | Train Loss: 0.4107 | Train Acc: 89.27% | Val Loss: 0.5706 | Val Acc: 82.69%
-  -> Saved best model (Val Acc: 82.69%)
-Epoch 3/20 | Train Loss: 0.2073 | Train Acc: 94.86% | Val Loss: 0.4747 | Val Acc: 85.83%
-  -> Saved best model (Val Acc: 85.83%)
-Epoch 4/20 | Train Loss: 0.1076 | Train Acc: 97.66% | Val Loss: 0.5163 | Val Acc: 84.74%
-Epoch 5/20 | Train Loss: 0.0780 | Train Acc: 98.37% | Val Loss: 0.4752 | Val Acc: 85.58%
-Epoch 6/20 | Train Loss: 0.0608 | Train Acc: 98.86% | Val Loss: 0.5492 | Val Acc: 83.27%
-Epoch 7/20 | Train Loss: 0.0509 | Train Acc: 98.91% | Val Loss: 0.4643 | Val Acc: 86.13%
-  -> Saved best model (Val Acc: 86.13%)
-Epoch 8/20 | Train Loss: 0.0279 | Train Acc: 99.59% | Val Loss: 0.4439 | Val Acc: 87.35%
-  -> Saved best model (Val Acc: 87.35%)
-Epoch 9/20 | Train Loss: 0.0302 | Train Acc: 99.48% | Val Loss: 0.4557 | Val Acc: 86.97%
-Epoch 10/20 | Train Loss: 0.0215 | Train Acc: 99.57% | Val Loss: 0.5742 | Val Acc: 83.89%
-Epoch 11/20 | Train Loss: 0.0753 | Train Acc: 97.77% | Val Loss: 0.5832 | Val Acc: 83.48%
-Epoch 12/20 | Train Loss: 0.0778 | Train Acc: 97.74% | Val Loss: 0.6178 | Val Acc: 83.32%
-Epoch 13/20 | Train Loss: 0.0898 | Train Acc: 97.09% | Val Loss: 0.5830 | Val Acc: 84.60%
-Epoch 14/20 | Train Loss: 0.0478 | Train Acc: 98.86% | Val Loss: 0.5721 | Val Acc: 83.86%
-Epoch 15/20 | Train Loss: 0.0171 | Train Acc: 99.73% | Val Loss: 0.5548 | Val Acc: 86.13%
-Epoch 16/20 | Train Loss: 0.0086 | Train Acc: 99.84% | Val Loss: 0.5171 | Val Acc: 86.51%
-Epoch 17/20 | Train Loss: 0.0157 | Train Acc: 99.62% | Val Loss: 0.5906 | Val Acc: 84.49%
-Epoch 18/20 | Train Loss: 0.0140 | Train Acc: 99.67% | Val Loss: 0.5740 | Val Acc: 86.05%
-Epoch 19/20 | Train Loss: 0.0099 | Train Acc: 99.81% | Val Loss: 0.5604 | Val Acc: 85.20%
-Epoch 20/20 | Train Loss: 0.0227 | Train Acc: 99.48% | Val Loss: 0.6332 | Val Acc: 83.84%
+Exp 1: Baseline (No Teacher)
+  - Epochs: 100
+  - Peak Val Top-1 Accuracy: 35.83%
+  - Peak Val Top-5 Accuracy: 98.92%
+  - Converged Val Loss: 0.6332 (Severe Overfit)
 
-Baseline training complete. Best Val Acc: 87.35%
+  Exp 2: ViTKD
+  - Epochs: 20
+  - Peak Val Top-1 Accuracy: 38.09%
+  - Peak Val Top-5 Accuracy: 98.92%
+  - Converged Val Loss: 0.5220
+
+  Exp 3: CLS Token Distillation
+  - Epochs: 20
+  - Peak Val Top-1 Accuracy: 38.45%
+  - Peak Val Top-5 Accuracy: 99.18%
+  - Converged Val Loss: 0.3826
+
+
+Exp 4: Attention Transfer Distillation
+  - Epochs: 20
+  - Peak Val Top-1 Accuracy: 34.92%
+  - Peak Val Top-5 Accuracy: 98.28%
+  - Converged Val Loss: 0.6478
+
+
+DETAILED BREAKDOWN
+
+  Experiment 1: Baseline Train (No Teacher)
+    Configuration: Standard ViT-Tiny trained with Cross-Entropy Loss.
+    Epochs: 100 | Learning Rate: 1e-4 | Optimizer: AdamW
+
+  Experiment 2: ViT Patch Feature Distillation (ViTKD)
+    Configuration: MSE loss between the projected student patch embeddings and 
+    teacher patch embeddings, combined with Cross-Entropy classification loss.
+    Epochs: 20 | Learning Rate: 1e-4 | Optimizer: AdamW
+
+  Experiment 3: CLS Token Feature Distillation
+    Configuration: Focuses feature distillation exclusively on aligning the CLS 
+    token (representation index 0) between the student and teacher using a linear 
+    projection layer.
+    Epochs: 20 | Learning Rate: 1e-4 | Optimizer: AdamW
+  
+
+  Experiment 4: Attention Transfer Distillation
+    Configuration: L2-normalized attention maps extracted over the spatial patch 
+    dimensions. Uses MSE loss to transfer attention maps from teacher to student, 
+    plus classification loss.
+    Epochs: 20 | Learning Rate: 1e-4 | Optimizer: Adam
+
