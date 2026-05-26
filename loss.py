@@ -73,3 +73,29 @@ class CLSDistillationLoss(nn.Module):
         total_loss = (1 - self.alpha) * task_loss + self.alpha * distillation_loss
         
         return total_loss
+
+
+
+class AttentionTransferLoss(nn.Module):
+    def __init__(self, alpha: float = 0.5):
+        super().__init__()
+        self.alpha = alpha
+        # Look ma, no projector! 
+
+    def forward(self, student_logits, student_features, teacher_features, labels):
+        
+        task_loss = F.cross_entropy(student_logits, labels)
+
+        student_patches = student_features[:, 1:, :] # Shape: [Batch, Num_Patches, 192]
+        teacher_patches = teacher_features[:, 1:, :] # Shape: [Batch, Num_Patches, 1024]
+        student_attn = student_patches.norm(p=2, dim=-1) # Shape becomes: [Batch, Num_Patches]
+        teacher_attn = teacher_patches.norm(p=2, dim=-1) # Shape becomes: [Batch, Num_Patches]
+
+        student_attn = F.normalize(student_attn, p=2, dim=-1)
+        teacher_attn = F.normalize(teacher_attn, p=2, dim=-1)
+
+        distillation_loss = F.mse_loss(student_attn, teacher_attn)
+
+        total_loss = (1 - self.alpha) * task_loss + self.alpha * distillation_loss
+        
+        return total_loss
