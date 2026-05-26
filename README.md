@@ -10,8 +10,3 @@
 
 # Oxford-IIIT Pet
 # VOCSegmentation
-
-
-Experiment 1 (Baseline): Standard Logit Distillation.Experiment 2: ViTKD (Patch Token Distillation).  Experiment 3: CLS Token Feature Distillation.Experiment 4: Attention Map Transfer.Experiment 5: Relational Knowledge Distillation.Experiment 6: A combination loss (e.g., Logit + ViTKD)
-
-
