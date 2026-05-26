@@ -2,8 +2,6 @@ import torch
 import torchvision.datasets as d
 from torch.utils.data import DataLoader
 import torchvision.transforms as T
-# import albumentations as A
-# from albumentations.pytorch import ToTensorV2
 
 def get_oxford_pet_dataloder(batch_size: int = 64, num_workers: int = 2):
     train_transforms = T.Compose([

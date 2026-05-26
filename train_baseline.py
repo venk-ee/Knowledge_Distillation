@@ -70,7 +70,6 @@ def train_baseline(epochs=20, lr=1e-4):
                 logits = student_model(data)
                 loss = F.cross_entropy(logits, target)
 
-                # Calculate metrics
                 acc1, acc5 = calculate_topk_accuracy(logits, target, topk=(1, 5))
                 val_loss.update(loss.item(), data.size(0))
                 val_top1.update(acc1, data.size(0))
@@ -92,13 +91,11 @@ def train_baseline(epochs=20, lr=1e-4):
             f"Val Loss: {val_loss.avg:.4f} | Val Top-1: {val_top1.avg:.2f}% | Val Top-5: {val_top5.avg:.2f}%"
         )
 
-        # Save Best Model by Top-1 (Backward-compatible with infer_test.py using baseline_best.pth)
         if val_top1.avg > best_val_top1:
             best_val_top1 = val_top1.avg
             torch.save(student_model.state_dict(), "baseline_best.pth")
             print(f"  -> Saved best model by Top-1 (Val Top-1: {val_top1.avg:.2f}%)")
 
-        # Save Best Model by Top-5
         if val_top5.avg > best_val_top5:
             best_val_top5 = val_top5.avg
             torch.save(student_model.state_dict(), "baseline_best_top5.pth")

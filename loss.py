@@ -80,7 +80,6 @@ class AttentionTransferLoss(nn.Module):
     def __init__(self, alpha: float = 0.5):
         super().__init__()
         self.alpha = alpha
-        # Look ma, no projector! 
 
     def forward(self, student_logits, student_features, teacher_features, labels):
         
