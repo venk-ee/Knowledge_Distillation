@@ -50,3 +50,26 @@ class ViTKDLoss(nn.Module):
         total_loss = (1 - self.alpha) * task_loss + self.alpha * distillation_loss
         
         return total_loss
+
+
+class CLSDistillationLoss(nn.Module):
+    def __init__(self, student_dim: int = 192, teacher_dim: int = 1024, alpha: float = 0.5):
+        super().__init__()
+        self.alpha = alpha
+        
+        self.projector = nn.Linear(student_dim, teacher_dim)
+
+    def forward(self, student_logits, student_features, teacher_features, labels):
+        
+        task_loss = F.cross_entropy(student_logits, labels)
+
+        student_cls = student_features[:, 0]
+        teacher_cls = teacher_features[:, 0]
+
+        projected_student_cls = self.projector(student_cls)
+
+        distillation_loss = F.mse_loss(projected_student_cls, teacher_cls)
+
+        total_loss = (1 - self.alpha) * task_loss + self.alpha * distillation_loss
+        
+        return total_loss

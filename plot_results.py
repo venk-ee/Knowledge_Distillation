@@ -1,5 +1,7 @@
 import json
 import os
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def load_history(filepath):
@@ -9,8 +11,8 @@ def load_history(filepath):
     return None
 
 def main():
-    baseline = load_history("/home/kenny/dev/Knowledge_Distillation/experiments/baseline/baseline_history.json")
-    distill = load_history("/home/kenny/dev/Knowledge_Distillation/experiments/ViTKD/distillation_history.json")
+    baseline = load_history("/home/kenny/pytorch/Knowledge_Distillation/experiments/baseline/baseline_history.json")
+    distill = load_history("/home/kenny/pytorch/Knowledge_Distillation/experiments/vitdk/distillation_history.json")
 
     if not baseline and not distill:
         print("Error: Neither 'baseline_history.json' nor 'distillation_history.json' found.")
